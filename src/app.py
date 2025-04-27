@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 from tasks import load_tasks, save_tasks, filter_tasks_by_priority, filter_tasks_by_category
+import subprocess
 
 def main():
     st.title("To-Do Application")
@@ -79,5 +80,68 @@ def main():
                 save_tasks(tasks)
                 st.rerun()
 
+    st.title("Run Unit Tests")
+
+    if st.button("Run Unit Tests"):
+        st.write("Running unit tests...")
+        result = subprocess.run(["pytest", "tests/test_basic.py"], capture_output=True, text=True)
+
+        st.text(result.stdout)
+
+    # Title for the Streamlit app
+    st.title("Pytest Features with Streamlit")
+
+    # Run Tests with Code Coverage
+    if st.button("Run Tests with Code Coverage"):
+        st.write("Running tests with code coverage...")
+        result = subprocess.run(["pytest", "--cov=src", "--cov-report=html", "tests"], capture_output=True, text=True)
+        st.text(result.stdout)
+        if result.returncode == 0:
+            st.success("Tests passed with coverage.")
+        else:
+            st.error("Tests failed. Check output for details.")
+
+    # Run Parameterized Tests
+    if st.button("Run Parameterized Tests"):
+        st.write("Running parameterized tests...")
+        result = subprocess.run(["pytest", "tests/test_advanced.py"], capture_output=True, text=True)
+        st.text(result.stdout)
+
+    # Run Tests with Mocking
+    if st.button("Run Mocking Tests"):
+        st.write("Running tests with mocking...")
+        result = subprocess.run(["pytest", "tests/test_advanced.py"], capture_output=True, text=True)
+        st.text(result.stdout)
+
+    # Run Tests and Generate HTML Report
+    if st.button("Run Tests and Generate HTML Report"):
+        st.write("Running tests and generating HTML report...")
+        result = subprocess.run(["pytest", "--html=report.html", "tests"], capture_output=True, text=True)
+        st.text(result.stdout)
+        if result.returncode == 0:
+            st.success("Tests passed. Check the HTML report.")
+        else:
+            st.error("Tests failed. Check output for details.")
+
+    st.title("Behavior-Driven Development (BDD) Tests")
+
+    # BDD tests
+    if st.button("Run BDD Tests"):
+        st.write("Running BDD tests...")
+        result = subprocess.run(["pytest", "tests/test_bdd.py"], capture_output=True, text=True)
+        st.text(result.stdout)
+        if result.returncode == 0:
+            st.success("BDD tests passed.")
+        else:
+            st.error("BDD tests failed. Check output for details.")
+
+    # Hypothesis
+    st.title("Hypothesis Tests Runner")
+
+    if st.button("Run Hypothesis Tests"):
+        result = subprocess.run(["pytest", "tests/test_property.py", "--maxfail=1", "--disable-warnings", "-q"], capture_output=True, text=True)
+        st.text(result.stdout)
+        st.text(result.stderr)   
+                     
 if __name__ == "__main__":
     main()
